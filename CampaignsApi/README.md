@@ -78,6 +78,7 @@ cd CampaignsApi
 ### 2. Start SQL Server (Docker)
 ```bash
 # Pull and run SQL Server 2022
+# if running on macOS (M1, M2, M3) add the option --platform amd64
 docker run -e "ACCEPT_EULA=Y" \
   -e "MSSQL_SA_PASSWORD=YourStrong@Password123" \
   -p 1433:1433 \

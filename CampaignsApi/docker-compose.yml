@@ -1,0 +1,71 @@
+# docker-compose.yml
+
+version: "3.8"
+
+services:
+  # SQL Server service
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    container_name: campaigns-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourPassword"
+      MSSQL_AGENT_ENABLED: "true"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - campaigns-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourPassword -Q 'SELECT 1' -C || exit 1",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+
+  # Campaigns API service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: campaigns-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:80;https://+:443"
+
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "YourPassword"
+
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=CampaignsDb;User Id=sa;Password=YourPassword;Integrated Security=false;TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=true"
+
+      # Azure AD configuration
+      AzureAd__Instance: "https://login.microsoftonline.com/"
+      AzureAd__TenantId: "common"
+      AzureAd__ClientId: "f50fb135-a878-46ae-a516-fd167f8183ec"
+      AzureAd__Audience: "f50fb135-a878-46ae-a516-fd167f8183ec"
+    ports:
+      # Map host port 8080 to container port 80
+      - "5069:80" # HTTP
+      - "7137:443" # HTTPS
+    volumes:
+      - ~/.aspnet/https:/https:ro # Mount certificate from host
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - campaigns-network
+    restart: unless-stopped
+
+volumes:
+  sqlserver-data:
+    driver: local
+
+networks:
+  campaigns-network:
+    driver: bridge

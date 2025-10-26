@@ -1,0 +1,26 @@
+# .dockerignore
+
+# Build outputs
+**/bin/
+**/obj/
+**/out/
+
+# IDE and editor files
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+
+# Docker files themselves
+Dockerfile
+docker-compose*.yml
+.dockerignore
