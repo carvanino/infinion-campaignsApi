@@ -210,3 +210,5 @@ if (app.Environment.IsDevelopment())
 
 app.Logger.LogInformation("Starting Campaigns API");
 app.Run();
+
+public partial class Program { }

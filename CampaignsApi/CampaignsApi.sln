@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CampaignsApi.Infrastructure
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CampaignsApi.API", "CampaignsApi.API\CampaignsApi.API.csproj", "{92D1FF25-47E2-4AEB-95F8-9337962F4783}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CampaignsApi.UnitTests", "CampaignsApi.UnitTests\CampaignsApi.UnitTests.csproj", "{3D4CA861-EF57-4C6B-B306-DE45FA1F85CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CampaignsApi.IntegrationTests", "CampaignsApi.IntegrationTests\CampaignsApi.IntegrationTests.csproj", "{EADCAD8E-3FA3-4BE6-9C38-C19D33F8B95D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +40,13 @@ Global
 		{92D1FF25-47E2-4AEB-95F8-9337962F4783}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92D1FF25-47E2-4AEB-95F8-9337962F4783}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92D1FF25-47E2-4AEB-95F8-9337962F4783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D4CA861-EF57-4C6B-B306-DE45FA1F85CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D4CA861-EF57-4C6B-B306-DE45FA1F85CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D4CA861-EF57-4C6B-B306-DE45FA1F85CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D4CA861-EF57-4C6B-B306-DE45FA1F85CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EADCAD8E-3FA3-4BE6-9C38-C19D33F8B95D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EADCAD8E-3FA3-4BE6-9C38-C19D33F8B95D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EADCAD8E-3FA3-4BE6-9C38-C19D33F8B95D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EADCAD8E-3FA3-4BE6-9C38-C19D33F8B95D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
