@@ -52,7 +52,7 @@ public class CampaignsController : ControllerBase {
                 Data = campaigns,
                 TotalCount = totalCount,
                 PageSize = pageSize,
-                ContinuationToken = continuationToken,
+                ContinuationToken = nextToken,
                 HasMore = nextToken != null
             };
             return Ok(response);
