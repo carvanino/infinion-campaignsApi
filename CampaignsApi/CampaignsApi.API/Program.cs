@@ -10,6 +10,7 @@ using CampaignsApi.Application.Services;
 using CampaignsApi.Application.Validators;
 using CampaignsApi.Infrastructure.Data.Repositories;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 
 
@@ -41,7 +42,28 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateCampaignValidator>();
 builder.Services.AddFluentValidationAutoValidation();
 
 // JSON configurations
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
+{
+    // Override the default validation response
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(x => x.Value?.Errors.Count > 0)
+            .ToDictionary(
+                kvp => char.ToLowerInvariant(kvp.Key[0]) + kvp.Key.Substring(1), // Convert to camelCase
+                kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+            );
+
+        var response = new
+        {
+            status = 400,
+            message = "Validation failed",
+            errors = errors
+        };
+
+        return new BadRequestObjectResult(response);
+    };
+}).AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
@@ -67,31 +89,6 @@ builder.Services.AddSwaggerGen(options =>
         }
 
     });
-
-    /* options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Please provide a JWT token from Azure AD"
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    }); */
 
     // Configure OAuth2 with Azure AD
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -195,8 +192,6 @@ if (app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     
-    // Apply pending migrations automatically
-    // In production, you'd run migrations separately (dotnet ef database update)
     try
     {
         dbContext.Database.Migrate();
