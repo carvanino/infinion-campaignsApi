@@ -38,7 +38,9 @@ public class UpdateCampaignValidator : AbstractValidator<UpdateCampaignDto> {
         When(x => x.Budget.HasValue, () => {
             RuleFor(x => x.Budget)
                 .GreaterThan(0)
-                .WithMessage("Budget must be greater than zero");
+                .WithMessage("Budget must be greater than zero")
+                .LessThanOrEqualTo(100_000_000)  // Add this line
+                .WithMessage("Budget cannot exceed 100,000,000");
         });
 
         When(x => x.Status.HasValue, () => {

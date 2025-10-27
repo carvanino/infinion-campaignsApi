@@ -72,10 +72,52 @@ This project follows **Clean Architecture** principles with clear separation of 
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/carvanino/infinion-campaignsApi
-cd CampaignsApi
+cd infinion-campaignsApi/CampaignsApi 
 ```
 
-### 2. Start SQL Server (Docker)
+### 2A. Quick Start with Docker 
+## 🐳 Docker Deployment
+
+### Prerequisites
+
+1. Trust the .NET development certificate:
+```bash
+   dotnet dev-certs https --trust
+```
+
+2. Create the required directory if it doesn't exist
+```bash
+    mkdir -p ~/.aspnet/https
+```
+
+2. Export certificate for Docker:
+```bash
+   dotnet dev-certs https -ep ~/.aspnet/https/aspnetapp.pfx -p YourSecurePassword
+```
+
+### Quick Start
+```bash
+docker-compose up -d --build
+
+docker-compose logs -f api
+
+open https://localhost:7137/swagger
+```
+
+The API will be available at:
+- **HTTPS**: https://localhost:7137
+- **HTTP**: http://localhost:5069
+
+### Authentication
+
+OAuth authentication works out of the box:
+1. Click "Authorize" in Swagger
+2. Sign in with any Microsoft account
+3. Test the endpoints
+
+----
+
+### 2B . Start SQL Server (Docker)
 ```bash
 # Pull and run SQL Server 2022
 # if running on macOS (M1, M2, M3) add the option --platform amd64
@@ -335,13 +377,6 @@ Configure OAuth 2.0:
 - **Factory Method**: Campaign.Create() enforces business rules
 - **DTO Pattern**: API contracts separate from domain entities
 
-### Performance Optimizations
-
-- **Database indexes** on Status, CreatedBy, IsDeleted, composite indexes
-- **Global query filter** automatically excludes soft-deleted records
-- **ExecuteUpdateAsync** for efficient soft delete (no entity loading)
-- **Continuation tokens** for scalable pagination
-- **AsNoTracking** for read-only queries (can be added for optimization)
 
 ---
 

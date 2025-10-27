@@ -92,8 +92,14 @@ public class Campaign
     private static void ValidateBudget(double budget) {
         // Business rule: Budget must be positive
         // Can't have a campaign with zero or negative budget
-        if (budget <= 0) {
+        if (budget <= 0)
+        {
             throw new DomainException("Budget must be greater than zero");
+        }
+        
+        if (budget > 100_000_000)
+        {
+            throw new DomainException("Budget cannot exceed 100,000,000");
         }
     }
 
