@@ -78,4 +78,27 @@ public class CreateCampaignValidatorTests
         result.IsValid.Should().BeFalse();
         result.Errors.Should().Contain(e => e.PropertyName == "Budget");
     }
+
+    [Fact]
+    public void Validate_WithBudgetExceedingMax_ShouldFail()
+    {
+        // Arrange
+        var dto = new CreateCampaignDto
+        {
+            Name = "Test",
+            Description = "Description",
+            StartDate = DateTime.UtcNow.AddDays(1),
+            EndDate = DateTime.UtcNow.AddDays(30),
+            Budget = 150_000_000  // Over 100M limit
+        };
+
+        // Act
+        var result = _validator.Validate(dto);
+
+        // Assert
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().Contain(e => 
+            e.PropertyName == "Budget" && 
+            e.ErrorMessage.Contains("100,000,000"));
+    }
 }

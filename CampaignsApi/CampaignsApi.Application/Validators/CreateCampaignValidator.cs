@@ -31,6 +31,8 @@ public class CreateCampaignValidator : AbstractValidator<CreateCampaignDto> {
 
         RuleFor(x => x.Budget)
             .GreaterThan(0)
-            .WithMessage("Budget must be greater than zero");
+            .WithMessage("Budget must be greater than zero")
+            .LessThanOrEqualTo(100_000_000)
+            .WithMessage("Budget cannot exceed 100,000,000");
     }
 }
