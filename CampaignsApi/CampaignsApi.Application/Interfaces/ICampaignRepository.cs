@@ -7,6 +7,8 @@ public interface ICampaignRepository
 {
     Task<Campaign?> GetByIdAsync(Guid id);
 
+    Task<Campaign?> GetByNameAsync(string name);
+
     Task<(List<Campaign> campaigns, int totalCount, string? continuationToken)> GetAllAsync(
         int pageSize = 20,
         string? continuationToken = null,

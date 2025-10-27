@@ -20,8 +20,15 @@ public class CampaignRepository : ICampaignRepository {
         _context = context;
     }
 
-    public async Task<Campaign?> GetByIdAsync(Guid id) {
+    public async Task<Campaign?> GetByIdAsync(Guid id)
+    {
         return await _context.Campaigns.FindAsync(id);
+    }
+    
+    public async Task<Campaign?> GetByNameAsync(string name)
+    {
+        return await _context.Campaigns
+            .FirstOrDefaultAsync(c => c.Name == name);
     }
 
     public async Task<(List<Campaign> campaigns, int totalCount, string? continuationToken)> GetAllAsync(
@@ -36,7 +43,7 @@ public class CampaignRepository : ICampaignRepository {
         IQueryable<Campaign> query = _context.Campaigns;
 
         if (!string.IsNullOrWhiteSpace(nameFilter)) {
-            query = query.Where(c => EF.Functions.Like(c.Name, $"${nameFilter}%"));
+            query = query.Where(c => EF.Functions.Like(c.Name, $"%{nameFilter}%"));
         }
 
         if (statusFilter.HasValue) {

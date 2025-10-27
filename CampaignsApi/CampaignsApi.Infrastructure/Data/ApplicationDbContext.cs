@@ -52,6 +52,10 @@ public class ApplicationDbContext  : DbContext {
                 .IsRequired()
                 .HasDefaultValue(false);
 
+            entity.HasIndex(e => e.Name)
+                .IsUnique()
+                .HasDatabaseName("IX_Campaigns_Name_Unique");
+
             entity.HasIndex(e => e.Status)
                 .HasDatabaseName("IX_Campaigns_Status");
             

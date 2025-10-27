@@ -4,7 +4,7 @@ using CampaignsApi.Application.DTOs;
 using CampaignsApi.Application.Interfaces;
 using CampaignsApi.Domain.Entities;
 using CampaignsApi.Domain.Enums;
-
+using CampaignsApi.Domain.Exceptions;
 
 public class CampaignService : ICampaignService {
     private readonly ICampaignRepository _repository;
@@ -49,6 +49,14 @@ public class CampaignService : ICampaignService {
     }
 
     public async Task<CampaignResponseDto> CreateCampaignAsync(CreateCampaignDto campaignDTO, string createdBy) {
+
+        var existingCampaign = await _repository.GetByNameAsync(campaignDTO.Name);
+
+        if (existingCampaign != null)
+        {
+            throw new DomainException($"A campaign with the name '{campaignDTO.Name}' already exists");
+        }
+        
         var campaign = Campaign.Create(
             campaignDTO.Name,
             campaignDTO.Description,
@@ -66,8 +74,19 @@ public class CampaignService : ICampaignService {
     public async Task<CampaignResponseDto?> UpdateCampaignAsync(Guid id, UpdateCampaignDto campaignDTO) {
         var campaign = await _repository.GetByIdAsync(id);
 
-        if (campaign == null || campaign.IsDeleted) {
+        if (campaign == null || campaign.IsDeleted)
+        {
             return null;
+        }
+        
+        if (campaignDTO.Name != null && campaignDTO.Name != campaign.Name)
+        {
+            var existingCampaign = await _repository.GetByNameAsync(campaignDTO.Name);
+            
+            if (existingCampaign != null && existingCampaign.Id != id)
+            {
+                throw new DomainException($"A campaign with the name '{campaignDTO.Name}' already exists");
+            }
         }
 
         var updatedName = campaignDTO.Name ?? campaign.Name;
